@@ -4,9 +4,13 @@ const ctx = canvas.getContext('2d');
 canvas.width = 400;
 canvas.height = 400;
 
-canvas.setAttribute('style', 'display:block:margin:auto;background-color: #aaa');
+canvas.setAttribute('style', 'display:block;margin:auto;background-color: #aaa');
 
 document.body.appendChild(canvas);
+
+
+
+
 
 const GRID = 20;
 const STAGE = canvas.width / GRID;
@@ -26,23 +30,50 @@ const snake = {
     ctx.fillStyle = 'green';
 
     this.body.forEach(obj => {
-      ctx?.fillRect(obj.x * GRID, obj.y * GRID, GRID-2, GRID-2);
+      ctx.fillRect(obj.x * GRID, obj.y * GRID, GRID-2, GRID-2);
+      if(this.x === obj.x && this.y === obj.y) init();
     })
     if(this.body.length > this.tail) this.body.shift();
   }
 }
-const item = {}
+const item = {
+    x: null,
+    y: null,
+
+    update: function () {
+        ctx.fillStyle = 'red';
+        ctx.fillRect(this.x * GRID, this.y * GRID, GRID, GRID);
+    }
+}
 
 const init = () => {
   snake.x = STAGE / 2;
   snake.y = STAGE / 2;
   snake.tail = 4;
   snake.body = [];
+
+  item.x = Math.floor(Math.random() * STAGE);
+  item.y = Math.floor(Math.random() * STAGE);
 }
+
 const loop = () => {
-  ctx?.clearRect(0,0,canvas.width,canvas.height);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  if(snake.x < 0)      snake.x = STAGE-1;
+  if(snake.y < 0)      snake.y = STAGE-1;
+  if(snake.x > STAGE-1)  snake.x = 0;
+  if(snake.y > STAGE-1)  snake.y = 0;
 
   snake.update();
+  item.update();
+
+
+
+  if(snake.x === item.x && snake.y === item.y) {
+    snake.tail++;
+    item.x = Math.floor(Math.random() * STAGE);
+  item.y = Math.floor(Math.random() * STAGE);
+  }
 }
 
 init();
@@ -51,16 +82,16 @@ setInterval(loop, 1000/15);
 document.addEventListener('keydown', e => {
   switch(e.key){
     case 'ArrowLeft';
-    snake.dx = -1;snake.by = 0;
+    snake.dx = -1; snake.dy = 0;
     break;
     case 'ArrowRight';
-    snake.dx = 1;snake.by = 0;
+    snake.dx = 1; snake.dy = 0;
     break;
     case 'ArrowUp';
-    snake.dx = 0;snake.by = -1;
+    snake.dx = 0; snake.dy = -1;
     break;
     case 'ArrowDown';
-    snake.dx = 0;snake.by = 1;
+    snake.dx = 0; snake.dy = 1;
     break;
   }
 } );
