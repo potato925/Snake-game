@@ -1,7 +1,7 @@
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
-canvas.width = 400;
+canvas.width = 600;
 canvas.height = 400;
 
 canvas.setAttribute('style', 'display:block;margin:auto;background-color: #aaa');
@@ -12,7 +12,7 @@ document.body.appendChild(canvas);
 
 
 
-const GRID = 20;
+const GRID = 25;
 const STAGE = canvas.width / GRID;
 
 const snake = {
@@ -59,15 +59,13 @@ const init = () => {
 const loop = () => {
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  if(snake.x < 0)      snake.x = STAGE-1;
-  if(snake.y < 0)      snake.y = STAGE-1;
-  if(snake.x > STAGE-1)  snake.x = 0;
-  if(snake.y > STAGE-1)  snake.y = 0;
-
   snake.update();
   item.update();
 
-
+  if(snake.x < 0)        snake.x = STAGE-1;
+  if(snake.y < 0)        snake.y = STAGE-1;
+  if(snake.x > STAGE-1)  snake.x = 0;
+  if(snake.y > STAGE-1)  snake.y = 0;
 
   if(snake.x === item.x && snake.y === item.y) {
     snake.tail++;
@@ -77,7 +75,7 @@ const loop = () => {
 }
 
 init();
-setInterval(loop, 1000/15);
+setInterval(loop, 1000/10);
 
 document.addEventListener('keydown', e => {
   switch(e.key){

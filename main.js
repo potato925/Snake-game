@@ -1,10 +1,10 @@
 var canvas = document.createElement('canvas');
 var ctx = canvas.getContext('2d');
-canvas.width = 400;
+canvas.width = 600;
 canvas.height = 400;
 canvas.setAttribute('style', 'display:block;margin:auto;background-color: #aaa');
 document.body.appendChild(canvas);
-var GRID = 20;
+var GRID = 25;
 var STAGE = canvas.width / GRID;
 var snake = {
     x: null,
@@ -45,6 +45,8 @@ var init = function () {
 };
 var loop = function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    snake.update();
+    item.update();
     if (snake.x < 0)
         snake.x = STAGE - 1;
     if (snake.y < 0)
@@ -53,8 +55,6 @@ var loop = function () {
         snake.x = 0;
     if (snake.y > STAGE - 1)
         snake.y = 0;
-    snake.update();
-    item.update();
     if (snake.x === item.x && snake.y === item.y) {
         snake.tail++;
         item.x = Math.floor(Math.random() * STAGE);
@@ -62,7 +62,7 @@ var loop = function () {
     }
 };
 init();
-setInterval(loop, 1000 / 15);
+setInterval(loop, 1000 / 10);
 document.addEventListener('keydown', function (e) {
     switch (e.key) {
         case 'ArrowLeft':
