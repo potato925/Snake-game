@@ -12,6 +12,7 @@ var snake = {
     dx: 1,
     dy: 0,
     tail: null,
+    body: [],
     update: function () {
         var _this = this;
         this.body.push({ x: this.x, y: this.y });
@@ -36,8 +37,8 @@ var item = {
     }
 };
 var init = function () {
-    snake.x = STAGE / 2;
-    snake.y = STAGE / 2;
+    snake.x = Math.floor(STAGE / 2);
+    snake.y = Math.floor(STAGE / 2);
     snake.tail = 4;
     snake.body = [];
     item.x = Math.floor(Math.random() * STAGE);
@@ -47,14 +48,10 @@ var loop = function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     snake.update();
     item.update();
-    if (snake.x < 0)
-        snake.x = STAGE - 1;
-    if (snake.y < 0)
-        snake.y = STAGE - 1;
-    if (snake.x > STAGE - 1)
-        snake.x = 0;
-    if (snake.y > STAGE - 1)
-        snake.y = 0;
+    if (snake.x < 0 || snake.y < 0 || snake.x >= STAGE || snake.y >= STAGE) {
+        // 追加: 壁に当たったらゲームオーバー
+        init();
+    }
     if (snake.x === item.x && snake.y === item.y) {
         snake.tail++;
         item.x = Math.floor(Math.random() * STAGE);
@@ -66,22 +63,18 @@ setInterval(loop, 1000 / 10);
 document.addEventListener('keydown', function (e) {
     switch (e.key) {
         case 'ArrowLeft':
-            ;
             snake.dx = -1;
             snake.dy = 0;
             break;
         case 'ArrowRight':
-            ;
             snake.dx = 1;
             snake.dy = 0;
             break;
         case 'ArrowUp':
-            ;
             snake.dx = 0;
             snake.dy = -1;
             break;
         case 'ArrowDown':
-            ;
             snake.dx = 0;
             snake.dy = 1;
             break;
