@@ -51,8 +51,25 @@ var init = function () {
     item.x = Math.floor(Math.random() * STAGE);
     item.y = Math.floor(Math.random() * STAGE);
 };
+var drawGrid = function () {
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 1;
+    for (var i = 0; i < STAGE; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * GRID, 0);
+        ctx.lineTo(i * GRID, canvas.height);
+        ctx.stroke();
+    }
+    for (var j = 0; j < STAGE; j++) {
+        ctx.beginPath();
+        ctx.moveTo(0, j * GRID);
+        ctx.lineTo(canvas.width, j * GRID);
+        ctx.stroke();
+    }
+};
 var loop = function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawGrid(); // マス目を描画
     if (!isGameOver) {
         snake.update();
         item.draw();

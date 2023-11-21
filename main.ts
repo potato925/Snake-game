@@ -18,7 +18,7 @@ const snake = {
     dy: 0,
     tail: null,
     body: [],
-    
+
     update: function () {
         this.body.push({ x: this.x, y: this.y });
         this.x += this.dx;
@@ -63,8 +63,29 @@ const init = () => {
     item.y = Math.floor(Math.random() * STAGE);
 };
 
+const drawGrid = () => {
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 1;
+
+    for (let i = 0; i < STAGE; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * GRID, 0);
+        ctx.lineTo(i * GRID, canvas.height);
+        ctx.stroke();
+    }
+
+    for (let j = 0; j < STAGE; j++) {
+        ctx.beginPath();
+        ctx.moveTo(0, j * GRID);
+        ctx.lineTo(canvas.width, j * GRID);
+        ctx.stroke();
+    }
+};
+
 const loop = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawGrid(); // マス目を描画
 
     if (!isGameOver) {
         snake.update();
