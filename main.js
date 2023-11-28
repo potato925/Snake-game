@@ -1,6 +1,6 @@
 var canvas = document.createElement('canvas');
 var ctx = canvas.getContext('2d');
-canvas.width = 600;
+canvas.width = 400;
 canvas.height = 400;
 canvas.setAttribute('style', 'display:block;margin:auto;background-color: #aaa');
 document.body.appendChild(canvas);
@@ -34,8 +34,8 @@ var snake = {
     }
 };
 var item = {
-    x: null,
-    y: null,
+    x: Math.floor(Math.random() * (STAGE - 2)) + 1,
+    y: Math.floor(Math.random() * (STAGE - 2)) + 1,
     draw: function () {
         ctx.fillStyle = 'red';
         ctx.fillRect(this.x * GRID, this.y * GRID, GRID, GRID);
@@ -48,10 +48,12 @@ var init = function () {
     snake.y = Math.floor(STAGE / 2);
     snake.tail = 4;
     snake.body = [];
-    item.x = Math.floor(Math.random() * STAGE);
-    item.y = Math.floor(Math.random() * STAGE);
+    item.x = Math.floor(Math.random() * (STAGE / 4)) + STAGE / 8;
+    item.y = Math.floor(Math.random() * (STAGE / 4)) + STAGE / 8;
 };
 var drawGrid = function () {
+    if (!ctx)
+        return;
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 1;
     for (var i = 0; i < STAGE; i++) {
@@ -68,6 +70,8 @@ var drawGrid = function () {
     }
 };
 var loop = function () {
+    if (!ctx)
+        return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawGrid(); // マス目を描画
     if (!isGameOver) {
@@ -79,8 +83,8 @@ var loop = function () {
         }
         if (snake.x === item.x && snake.y === item.y) {
             snake.tail++;
-            item.x = Math.floor(Math.random() * STAGE);
-            item.y = Math.floor(Math.random() * STAGE);
+            item.x = Math.floor(Math.random() * (STAGE / 2)) + STAGE / 4;
+            item.y = Math.floor(Math.random() * (STAGE / 2)) + STAGE / 4;
         }
     }
     if (isGameOver) {
@@ -116,3 +120,22 @@ document.addEventListener('keydown', function (e) {
         }
     }
 });
+update: function update() {
+    var _this = this;
+    // スネークの座標を更新する前に境界チェック
+    if (this.x < 0 || this.y < 0 || this.x >= STAGE || this.y >= STAGE) {
+        isGameOver = true;
+        return;
+    }
+    this.body.push({ x: this.x, y: this.y });
+    this.x += this.dx;
+    this.y += this.dy;
+    this.body.forEach(function (obj) {
+        if (_this.x === obj.x && _this.y === obj.y) {
+            init();
+        }
+    });
+    if (this.body.length > this.tail)
+        this.body.shift();
+}
+;
