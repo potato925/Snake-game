@@ -42,6 +42,7 @@ var item = {
     }
 };
 var isGameOver = false;
+var score = 0;
 var init = function () {
     isGameOver = false;
     snake.x = Math.floor(STAGE / 2);
@@ -50,6 +51,7 @@ var init = function () {
     snake.body = [];
     item.x = Math.floor(Math.random() * (STAGE / 4)) + STAGE / 8;
     item.y = Math.floor(Math.random() * (STAGE / 4)) + STAGE / 8;
+    score = 0;
 };
 var drawGrid = function () {
     if (!ctx)
@@ -83,6 +85,7 @@ var loop = function () {
         }
         if (snake.x === item.x && snake.y === item.y) {
             snake.tail++;
+            score++; // スコアを増やす
             item.x = Math.floor(Math.random() * (STAGE / 2)) + STAGE / 4;
             item.y = Math.floor(Math.random() * (STAGE / 2)) + STAGE / 4;
         }
@@ -92,6 +95,10 @@ var loop = function () {
         ctx.font = '30px Arial';
         ctx.fillText('Game Over', canvas.width / 2 - 80, canvas.height / 2);
     }
+    // スコアを表示
+    ctx.fillStyle = 'black';
+    ctx.font = '20px Arial';
+    ctx.fillText('Score: ' + score, 10, 20); // 任意の位置にスコアを表示
 };
 init();
 setInterval(loop, 1000 / 10);
