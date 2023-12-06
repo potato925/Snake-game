@@ -32,23 +32,29 @@ const snake: Snake = {
     body: [],
 
     update: function () {
-        this.body.push({ x: this.x!, y: this.y! });
-        this.x! += this.dx;
-        this.y! += this.dy;
+        if (this.x !== null && this.y !== null) {
+            this.body.push({ x: this.x, y: this.y });
+            this.x += this.dx;
+            this.y += this.dy;
 
-        this.body.forEach(obj => {
-            if (this.x! === obj.x && this.y! === obj.y) {
-                init();
-            }
-        });
-        if (this.body.length > (this.tail as number)) this.body.shift();
+            this.body.forEach(obj => {
+                if (this.x === obj.x && this.y === obj.y) {
+                    init();
+                }
+            });
+            if (this.body.length > (this.tail as number)) this.body.shift();
+        }
     },
 
     draw: function () {
-        ctx!.fillStyle = 'green';
-        this.body.forEach(obj => {
-            ctx!.fillRect(obj.x * GRID, obj.y * GRID, GRID - 2, GRID - 2);
-        });
+        if (ctx) {
+            ctx.fillStyle = 'green';
+            this.body.forEach(obj => {
+                if (ctx) {
+                    ctx.fillRect(obj.x * GRID, obj.y * GRID, GRID - 2, GRID - 2);
+                }
+            });
+        }
     }
 };
 
@@ -64,8 +70,12 @@ const item: Item = {
     y: Math.floor(Math.random() * (STAGE - 2)) + 1,
 
     draw: function () {
-        ctx!.fillStyle = 'red';
-        ctx!.fillRect(this.x! * GRID, this.y! * GRID, GRID, GRID);
+        if (ctx) {
+            ctx.fillStyle = 'red';
+            if (this.x !== null && this.y !== null) {
+                ctx.fillRect(this.x * GRID, this.y * GRID, GRID, GRID);
+            }
+        }
     }
 };
 
@@ -116,28 +126,36 @@ const loop = () => {
         item.draw();
         snake.draw();
 
-        if (snake.x! < 0 || snake.y! < 0 || snake.x! >= STAGE || snake.y! >= STAGE) {
-            isGameOver = true;
-        }
+        if (snake.x !== null && snake.y !== null) {
+            if (snake.x < 0 || snake.y < 0 || snake.x >= STAGE || snake.y >= STAGE) {
+                isGameOver = true;
+            }
 
-        if (snake.x! === item.x! && snake.y! === item.y!) {
-            snake.tail!++;
-            score++; // スコアを増やす
-            item.x = Math.floor(Math.random() * (STAGE / 2)) + STAGE / 4;
-            item.y = Math.floor(Math.random() * (STAGE / 2)) + STAGE / 4;
+            if (snake.x === item.x && snake.y === item.y) {
+                snake.tail!++;
+                score++;
+                if (item.x !== null && item.y !== null) {
+                    item.x = Math.floor(Math.random() * (STAGE - 2)) + 1;
+                    item.y = Math.floor(Math.random() * (STAGE - 2)) + 1;
+                }
+            }
         }
     }
 
     if (isGameOver) {
-        ctx.fillStyle = 'black';
-        ctx.font = '30px Arial';
-        ctx.fillText('Game Over', canvas.width / 2 - 80, canvas.height / 2);
+        if (ctx) {
+            ctx.fillStyle = 'black';
+            ctx.font = '30px Arial';
+            ctx.fillText('Game Over', canvas.width / 2 - 80, canvas.height / 2);
+        }
     }
 
     // スコアを表示
-    ctx.fillStyle = 'black';
-    ctx.font = '20px Arial';
-    ctx.fillText('Score: ' + score, 10, 20); // 任意の位置にスコアを表示
+    if (ctx) {
+        ctx.fillStyle = 'black';
+        ctx.font = '20px Arial';
+        ctx.fillText('Score: ' + score, 10, 20);
+    }
 };
 
 init();
@@ -168,21 +186,23 @@ document.addEventListener('keydown', e => {
     }
 });
 
-update: function update() {
+function update() {
     // スネークの座標を更新する前に境界チェック
-    if (this.x! < 0 || this.y! < 0 || this.x! >= STAGE || this.y! >= STAGE) {
-        isGameOver = true;
-        return;
-    }
-
-    this.body.push({ x: this.x!, y: this.y! });
-    this.x! += this.dx;
-    this.y! += this.dy;
-
-    this.body.forEach(obj => {
-        if (this.x! === obj.x && this.y! === obj.y) {
-            init();
+    if (snake.x !== null && snake.y !== null) {
+        if (snake.x < 0 || snake.y < 0 || snake.x >= STAGE || snake.y >= STAGE) {
+            isGameOver = true;
+            return;
         }
-    });
-    if (this.body.length > (this.tail as number)) this.body.shift();
-};
+
+        snake.body.push({ x: snake.x, y: snake.y });
+        snake.x += snake.dx;
+        snake.y += snake.dy;
+
+        snake.body.forEach(obj => {
+            if (snake.x === obj.x && snake.y === obj.y) {
+                init();
+            }
+        });
+        if (snake.body.length > (snake.tail as number)) snake.body.shift();
+    }
+}
